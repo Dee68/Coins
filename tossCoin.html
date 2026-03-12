@@ -7,18 +7,28 @@
     <style>
 
                
-        #coinImageID{
+        /* #coinImageID{
             display: block;
             margin: 1rem auto;
-            /* allow 3D transforms */
-            /* transform-style: preserve-3d; */
+        
+        } */
+    #coinImageID{
+    display:block;
+    margin:1rem auto;
+    }
 
-        }
-    
+    .flip{
+        animation: coinFlip 0.9s ease-in-out;
+    }
+
+@keyframes coinFlip{
+    from { transform: rotateY(0deg); }
+    to   { transform: rotateY(1080deg); } /* 3 full spins */
+}
         
 
         /* flip animation */
-        .flip {
+        /* .flip {
             animation: flip 1s ease-in
         }
 
@@ -28,9 +38,36 @@
             50%  { transform: rotateX(180deg); }
             75%  { transform: rotateX(270deg); } 
             100% { transform: rotateX(300deg); }
+        } */
+      
+       .card{
+            text-align: center;
+            align-content: center;
+            background-color: white;
+            color:#333;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 16px 0px ;
+            box-shadow: 0px 2px 6px rgba(252, 5, 5, 0.937);
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    } 
+        
+    .card:hover{
+            box-shadow: 0px 4px 12px rgba(35, 186, 98, 0.9); 
+            transform: scale(1.02);
+            
         }
-      
-      
+ table,th,td {
+    border: 1px solid rgb(230, 182, 182);
+ }
+ table {
+    width: 100%;
+    border-collapse: collapse;
+    position: relative;
+    margin-top: 20px;
+    
+ }
 
     </style>
 </head>
@@ -45,12 +82,34 @@
 
     <br>
     <br>
+    <div class="card">
+        <table>
+            <tr>
+                <th>Tosses</th>
+                <th>Tails</th>
+                <th>Heads</th>
+            </tr>
+            <tr>
+                <td id="tossCount">
+                 0
+                </td>
+                <td id="tossTails"> 0</td>
+                <td id="tossHeads"> 0</td>
+            </tr>
+        </table>
+    </div>
 
     <script>
             
          
             const tossCoinButton = document.getElementById("tossCoinButtonID");
             const coinImage = document.getElementById("coinImageID");
+            const headCount = document.getElementById("tossHeads");
+            const tailCount = document.getElementById("tossTails");
+            const totalCount = document.getElementById("tossCount");
+            let numberTosses = 0;
+            let countTails = 0;
+            let countHeads = 0;
                       
             tossCoinButton.addEventListener("click", tossCoin);
 
@@ -78,18 +137,22 @@
            
                 // generate a random number between 1 and 2
                 // 1 is heads, 2 is tails
-                
+                numberTosses++
                 const coinValue = Math.floor(Math.random() * 2) + 1; // generates a number between 1 and 2
                 if(coinValue == 1){
                     coinImageFile = "images/headsTP.png";  // change the image source to heads - note forward slashes are used in the path
                     coinImage.alt = "Coin Heads";  // change the alt text to match the new image
+                    countHeads++;
+                    headCount.textContent = countHeads;
                 } else {
                     coinImageFile = "images/tailsTP.png";  // change the image source to tails
                     coinImage.alt = "Coin Tails";  // change the alt text to match the new image
+                    countTails++;
+                    tailCount.textContent = countTails;
                 }
                 flipCoinImage(coinImageFile)   // animated display of coin
 
-               
+               totalCount.textContent = numberTosses;
             }
 
     </script>
