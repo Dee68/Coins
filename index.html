@@ -5,26 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coin Tosst</title>
     <style>
-
+      body {
+        perspective: 800px;
+      }
                
-        /* #coinImageID{
+        #coinImageID{
             display: block;
             margin: 1rem auto;
         
-        } */
-    #coinImageID{
-    display:block;
-    margin:1rem auto;
-    }
+        }
+  
 
-    .flip{
-        animation: coinFlip 0.9s ease-in-out;
-    }
+        .flip{
+            animation: coinFlip 0.9s ease-in-out;
+        }
 
-@keyframes coinFlip{
-    from { transform: rotateY(0deg); }
-    to   { transform: rotateY(1080deg); } /* 3 full spins */
-}
+        @keyframes coinFlip{
+            from { transform: rotateY(0deg); }
+            to   { transform: rotateY(1080deg); } /* 3 full spins */
+        }
         
 
         /* flip animation */
@@ -58,16 +57,16 @@
             transform: scale(1.02);
             
         }
- table,th,td {
-    border: 1px solid rgb(230, 182, 182);
- }
- table {
-    width: 100%;
-    border-collapse: collapse;
-    position: relative;
-    margin-top: 20px;
-    
- }
+    table,th,td {
+        border: 1px solid rgb(230, 182, 182);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        position: relative;
+        margin-top: 20px;
+        
+    }
 
     </style>
 </head>
@@ -77,12 +76,18 @@
 
     <button id = "tossCoinButtonID">Toss Coin</button>
     <br>
+    <br>
+    <button id="startButton">Start Toss</button>
+    <button id="stopButton">Stop</button>
+    <br>
+    <button id="toggleAutoToss">Toggle</button>
    
     <img id="coinImageID" src= "images/tailsTP.png" alt="Coin Tails" height = "120px" >
 
     <br>
     <br>
     <div class="card">
+        <h3>DISPLAY STATICS OF COIN TOSSES</h3>
         <table>
             <tr>
                 <th>Tosses</th>
@@ -100,18 +105,43 @@
     </div>
 
     <script>
-            
+            // setInterval(tossCoin,2000);
          
             const tossCoinButton = document.getElementById("tossCoinButtonID");
             const coinImage = document.getElementById("coinImageID");
             const headCount = document.getElementById("tossHeads");
             const tailCount = document.getElementById("tossTails");
             const totalCount = document.getElementById("tossCount");
+            const startButton = document.getElementById("startButton");
+            const stopButton = document.getElementById("stopButton");
+            const toggleButton = document.getElementById("toggleAutoToss");
             let numberTosses = 0;
             let countTails = 0;
             let countHeads = 0;
+            let autoTimer = null;
+            const maxTosses = 100;//max number of tosses
                       
             tossCoinButton.addEventListener("click", tossCoin);
+            startButton.addEventListener("click", startToss);
+            stopButton.addEventListener("click", stopToss);
+            toggleButton.addEventListener("click",toggleToss);
+           //toggle the start and stop actions depending on the timer value
+            function toggleToss(){
+                if (autoTimer === null) {
+                    startToss();
+                } else {
+                    stopToss();
+                }
+            }
+
+         // stops the toss from the button click & sets timer to null
+            function stopToss(){
+
+                if(autoTimer !== null){
+                    clearTimeout(autoTimer);
+                    autoTimer = null;
+                }
+            }
 
             // We can listen for when the animatation of coinImage element is completed
             // coinImage.addEventListener("animationend", function(){alert("Animation complete");})
@@ -143,17 +173,42 @@
                     coinImageFile = "images/headsTP.png";  // change the image source to heads - note forward slashes are used in the path
                     coinImage.alt = "Coin Heads";  // change the alt text to match the new image
                     countHeads++;
-                    headCount.textContent = countHeads;
+                    
                 } else {
                     coinImageFile = "images/tailsTP.png";  // change the image source to tails
                     coinImage.alt = "Coin Tails";  // change the alt text to match the new image
                     countTails++;
-                    tailCount.textContent = countTails;
+                    
                 }
                 flipCoinImage(coinImageFile)   // animated display of coin
 
-               totalCount.textContent = numberTosses;
+               
+               displayResult();
             }
+            function displayResult(){
+                totalCount.textContent = numberTosses;
+                headCount.textContent = countHeads;
+                tailCount.textContent = countTails;
+            }
+        //checks for maxTosses before tossing coin and sets auto timer
+        function run(){
+
+            if(numberTosses >= maxTosses){
+                stopToss();
+                return;
+            }
+
+            tossCoin();
+
+            autoTimer = setTimeout(run, 5000);
+        }
+       //starts the toss from button click
+        function startToss(){
+
+            if(autoTimer !== null) return;
+
+            run();
+        }
 
     </script>
 
